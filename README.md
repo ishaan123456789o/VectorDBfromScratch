@@ -1,6 +1,6 @@
 # Distributed In-Memory Vector Database from Scratch
 
-This is a resume/learning project that implements the core pieces of a distributed vector database in C++20. I built the storage engine, approximate nearest-neighbor index, SIMD distance kernels, gRPC API surface, and coordinator/worker query architecture from scratch to understand how modern vector databases are put together under the hood.
+This is a project that implements the core pieces of a distributed vector database in C++20. I built the storage engine, approximate nearest-neighbor index, SIMD distance kernels, gRPC API surface, and coordinator/worker query architecture from scratch to understand how modern vector databases are put together under the hood.
 
 The project is intentionally small enough to read, but it includes real systems concepts: aligned memory management, HNSW graph search, hardware-aware distance computation, shard-level parallelism, binary persistence snapshots, and protobuf/gRPC service definitions.
 
