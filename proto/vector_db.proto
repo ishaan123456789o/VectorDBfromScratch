@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package vdb.rpc;
+
+service Worker {
+  rpc AddVector(AddVectorRequest) returns (AddVectorResponse);
+  rpc AddBatch(AddBatchRequest) returns (AddBatchResponse);
+  rpc Search(SearchRequest) returns (SearchResponse);
+}
+
+service Coordinator {
+  rpc AddVector(AddVectorRequest) returns (AddVectorResponse);
+  rpc AddBatch(AddBatchRequest) returns (AddBatchResponse);
+  rpc Search(SearchRequest) returns (SearchResponse);
+}
+
+enum Metric {
+  METRIC_UNSPECIFIED = 0;
+  L2 = 1;
+  COSINE = 2;
+}
+
+message Vector {
+  uint64 id = 1;
+  repeated float values = 2;
+}
+
+message SearchRequest {
+  repeated float query = 1;
+  uint32 top_k = 2;
+  Metric metric = 3;
+}
+
+message SearchResult {
+  uint64 id = 1;
+  float distance = 2;
+  string shard = 3;
+}
+
+message SearchResponse {
+  repeated SearchResult results = 1;
+}
+
+message AddVectorRequest {
+  Vector vector = 1;
+}
+
+message AddVectorResponse {
+  bool ok = 1;
+}
+
+message AddBatchRequest {
+  repeated Vector vectors = 1;
+}
+
+message AddBatchResponse {
+  uint32 inserted = 1;
+}
