@@ -47,6 +47,19 @@ void TestDistance() {
   assert(vdb::CosineDistance(lhs, rhs, 16) < 0.3F);
 }
 
+void TestUnalignedDistance() {
+  // Query buffers need not share the store's 64-byte alignment. Include a
+  // remainder after the SIMD block to exercise both parts of each kernel.
+  alignas(64) float lhs[32] = {};
+  alignas(64) float rhs[32] = {};
+  lhs[1] = 1.0F;
+  rhs[1] = 1.0F;
+  rhs[17] = 1.0F;
+  assert(std::fabs(vdb::L2Distance(lhs + 1, rhs + 1, 17) - 1.0F) < 1e-5F);
+  const float expected_cosine = 1.0F - 1.0F / std::sqrt(2.0F);
+  assert(std::fabs(vdb::CosineDistance(lhs + 1, rhs + 1, 17) - expected_cosine) < 1e-5F);
+}
+
 void TestHnswFindsInsertedVector() {
   vdb::HnswConfig config;
   config.dimension = vdb::kDefaultDimension;
@@ -153,6 +166,7 @@ void TestSnapshotRoundTrip() {
 int main() {
   TestAlignedStore();
   TestDistance();
+  TestUnalignedDistance();
   TestHnswFindsInsertedVector();
   TestCoordinatorMerge();
   TestCoordinatorBatchRouting();
